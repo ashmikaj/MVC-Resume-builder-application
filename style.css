@@ -1,0 +1,152 @@
+.whole {
+  display: flex;
+  flex-direction: row;
+  gap: 0 2rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  background-color: white;
+}
+
+.resumeForm {
+  width: 50%;
+  align-items: center;
+  margin-top: 10rem;
+}
+
+.resumeView {
+  width: 50%;
+  display: flex;
+}
+
+.Objective,
+.Education,
+.Experience,
+.Skills,
+.Awards {
+  display: none;
+}
+
+.name {
+  font-weight: bold;
+  font-size: x-large;
+  margin-left: 2rem;
+  color: black;
+}
+
+.location,
+.contact,
+.email,
+.linkedin {
+  text-align: right;
+  color: grey;
+  margin-right: 2rem;
+}
+
+.degree,
+.institute,
+.designation,
+.company {
+  color: rgb(100, 20, 100);
+  font-weight: bold;
+}
+
+p {
+  color: grey;
+}
+
+input {
+  width: 50%;
+  margin-top: -1rem;
+  display: block;
+  align-self: center;
+  margin-left: 6rem;
+}
+
+label {
+  display: block;
+  margin-left: 1rem;
+}
+
+button {
+  margin-top: 0.5rem;
+  color: aliceblue;
+  background-color: black;
+  border-radius: 2rem;
+  margin-left: 3rem;
+  margin-bottom: 2rem;
+  font-size: larger;
+}
+
+select {
+  background-color: rgb(100, 20, 100);
+  color: white;
+  width: 80%;
+  text-align: center;
+  height: 2rem;
+  border-radius: 2rem;
+}
+
+#buttonAdd {
+  margin-left: 12rem;
+  margin-top: -30rem;
+}
+
+.SkillsView {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: small;
+  justify-content: start;
+}
+
+.SkillsView > div {
+  margin-inline-end: 9rem;
+}
+
+.SkillsView div::before {
+  content: "\2022";
+  color: rgb(93, 53, 119);
+  font-weight: bold;
+}
+
+.awards {
+  display: flex;
+  flex-direction: column;
+  font-size: small;
+}
+
+.AwardsView div::before {
+  content: "\2022";
+  color: grey;
+  font-weight: bold;
+  width: 2em;
+}
+
+h3 {
+  margin-left: 2rem;
+  margin-top: -1.5rem;
+}
+
+.BasicView {
+  background-color: rgb(248, 248, 248);
+}
+
+.company,
+.institute {
+  margin-top: -0.5rem;
+  font-size: small;
+}
+
+.termEd,
+.termEx {
+  margin-top: -0.5rem;
+  font-size: small;
+}
+
+.workEx,
+.grade {
+  margin-top: -0.5rem;
+  font-size: small;
+}
+.objective {
+  font-size: small;
+}
