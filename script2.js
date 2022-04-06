@@ -91,23 +91,6 @@ class Model {
           ["Organized various team events"],
         ],
       },
-      startIndexView: {
-        Basic: 0,
-        Objective: 0,
-        Education: 0,
-        Experience: 0,
-        Skills: 0,
-        Awards: 0,
-      },
-      startIndexForm: {
-        Basic: 0,
-        Objective: 0,
-        Education: 0,
-        Experience: 0,
-        Skills: 0,
-        Awards: 0,
-      },
-
       Images: {
         Basic: 0,
         Objective: "img/objective.png",
@@ -117,8 +100,6 @@ class Model {
         Awards: "img/aw.png",
       },
       sectionFieldsAdd: {
-        Basic: [],
-        Objective: [],
         Education: [
           [
             "Enter Degree...",
@@ -225,11 +206,12 @@ class View {
     var select = this.getElement(".selectBox");
     this.inputContainer.addEventListener("click", event => {
       if (event.target.className === "removeFields") {
-        if (select.value == "Basic" || select.value == "Objective") {
-          alert("you cant remove these fields");
-        } else {
-          const id = event.target.parentElement.id;
-          handle(id);
+        switch (select.value) {
+          case "Basic" || "Objective":
+            alert("you cant remove these fields");
+          default:
+            const id = event.target.parentElement.id;
+            handle(id);
         }
       }
     });
@@ -252,41 +234,42 @@ class View {
     var sectionNames = configData.sectionMain;
     var fields = configData.sectionFields;
     var sectionDeatils = configData.sectionDetails;
-    var startIndexView = configData.startIndexView;
-    var startIndexForm = configData.startIndexForm;
-    var img = configData.Images;
+    var startIndexView = 0;
+    var startIndexForm = 0;
+    var imgData = configData.Images;
     var x = "Basic";
 
     while (this1.nameContainer.children.length > 0) {
       this1.nameContainer.removeChild(this1.nameContainer.lastChild);
     }
+
     sectionNames.forEach(function (sectionName) {
       var div = this1.createElement("div", sectionName + "View");
       var h2 = this1.createElement("h3");
-      var img1 = this1.createElement("img");
-      img1.src = img[sectionName];
-      img1.height = "21";
-      img1.width = "21";
+      var img = this1.createElement("img");
+      img.src = imgData[sectionName];
+      img.height = "21";
+      img.width = "21";
       h2.appendChild(document.createTextNode(sectionName));
-      if (sectionName !== "Basic") this1.nameContainer.append(img1, h2);
+      if (sectionName !== "Basic") this1.nameContainer.append(img, h2);
       sectionDeatils[sectionName].forEach(function (rows) {
-        var div2 = this1.createElement(
+        var headerContainer = this1.createElement(
           "div",
-          sectionName + "newView" + startIndexView[sectionName],
-          sectionName + "innerview" + startIndexView[sectionName]
+          sectionName + "newView" + startIndexView,
+          sectionName + "innerview" + startIndexView
         );
         rows.forEach(function (column, index) {
           var p = this1.createElement(
             "p",
             fields[sectionName][index],
-            fields[sectionName][index] + startIndexView[sectionName]
+            fields[sectionName][index] + startIndexView
           );
           p.appendChild(document.createTextNode(column));
-          div2.appendChild(p);
+          headerContainer.appendChild(p);
         });
-        div.appendChild(div2);
+        div.appendChild(headerContainer);
         this1.nameContainer.append(div);
-        startIndexView[sectionName]++;
+        startIndexView++;
       });
     });
 
@@ -315,10 +298,10 @@ class View {
       var div = this1.createElement("div", sectionName, sectionName);
       this1.inputContainer.append(div);
       sectionDeatils[sectionName].forEach(function (rows) {
-        var div2 = this1.createElement(
+        var sectionContainer = this1.createElement(
           "div",
-          sectionName + "new" + startIndexForm[sectionName],
-          sectionName + "inner" + startIndexForm[sectionName]
+          sectionName + "new" + startIndexForm,
+          sectionName + "inner" + startIndexForm
         );
         rows.forEach(function (column, index) {
           var label = this1.createElement("label");
@@ -328,28 +311,28 @@ class View {
           var p = this1.createElement(
             "input",
             fields[sectionName][index] + "form",
-            fields[sectionName][index] + "form" + startIndexForm[sectionName]
+            fields[sectionName][index] + "form" + startIndexForm
           );
 
           p.appendChild(document.createTextNode(column));
-          div2.append(label, p);
+          sectionContainer.append(label, p);
         });
 
-        var but = this1.createElement("Button", "confirmForm");
-        but.append(document.createTextNode("confirm"));
+        var confirmButton = this1.createElement("Button", "confirmForm");
+        confirmButton.append(document.createTextNode("confirm"));
 
-        div2.appendChild(but);
-        var res = this1.createElement("Button", "resetFields");
-        res.append(document.createTextNode("Reset"));
+        sectionContainer.appendChild(confirmButton);
+        var resetButton = this1.createElement("Button", "resetFields");
+        resetButton.append(document.createTextNode("Reset"));
 
-        div2.appendChild(res);
-        var rem = this1.createElement("Button", "removeFields");
-        rem.append(document.createTextNode(" X "));
+        sectionContainer.appendChild(resetButton);
+        var removeButton = this1.createElement("Button", "removeFields");
+        removeButton.append(document.createTextNode(" X "));
 
-        div2.appendChild(rem);
-        div.appendChild(div2);
+        sectionContainer.appendChild(removeButton);
+        div.appendChild(sectionContainer);
         this1.inputContainer.append(div);
-        startIndexForm[sectionName]++;
+        startIndexForm++;
       });
     });
 
@@ -366,30 +349,28 @@ class View {
     });
   }
 
-  AddButton(configData) {
+  onAddButtonClick(configData) {
     this.resumeForm.addEventListener("click", event => {
       if (event.target.className === "addButton") {
         var this1 = this;
         var select = this1.getElement(".selectBox");
-        var sectionNames = configData.sectionMain;
         var fields = configData.sectionFields;
         var sectionFieldsAdd = configData.sectionFieldsAdd;
-        var sectionDeatils = configData.sectionDetails;
-        var startIndexForm = configData.startIndexForm;
+        var startIndexForm = 0;
         var categoryActive = select.value;
         var containers = this1.getElement("#" + categoryActive);
         var containersview = this1.getElement("." + categoryActive + "View");
-        var startIndexView = configData.startIndexView;
+        var startIndexView = 0;
 
         if (categoryActive == "Basic" || categoryActive == "Objective") {
           alert("you can't add in this section");
         }
 
         sectionFieldsAdd[categoryActive].forEach(function (rows) {
-          var div2 = this1.createElement(
+          var formActive = this1.createElement(
             "div",
-            categoryActive + "new" + startIndexForm[categoryActive],
-            categoryActive + "inner" + startIndexForm[categoryActive]
+            categoryActive + "new" + startIndexForm,
+            categoryActive + "inner" + startIndexForm
           );
           rows.forEach(function (column, index) {
             var label = this1.createElement("label");
@@ -399,49 +380,47 @@ class View {
             var p = this1.createElement(
               "input",
               fields[categoryActive][index] + "form",
-              fields[categoryActive][index] +
-                "form" +
-                startIndexForm[categoryActive]
+              fields[categoryActive][index] + "form" + startIndexForm
             );
 
             p.appendChild(document.createTextNode(column));
             // p.value = [column];
-            div2.append(label, p);
+            formActive.append(label, p);
           });
 
-          var but = this1.createElement("Button", "confirmForm");
-          but.append(document.createTextNode("confirm"));
+          var confirmButton = this1.createElement("Button", "confirmForm");
+          confirmButton.append(document.createTextNode("confirm"));
 
-          div2.appendChild(but);
-          var res = this1.createElement("Button", "resetFields");
-          res.append(document.createTextNode("Reset"));
+          formActive.appendChild(confirmButton);
+          var resetButton = this1.createElement("Button", "resetFields");
+          resetButton.append(document.createTextNode("Reset"));
 
-          div2.appendChild(res);
-          var rem = this1.createElement("Button", "removeFields");
-          rem.append(document.createTextNode(" X "));
+          formActive.appendChild(resetButton);
+          var removeButton = this1.createElement("Button", "removeFields");
+          removeButton.append(document.createTextNode(" X "));
 
-          div2.appendChild(rem);
-          containers.append(div2);
-          startIndexForm[categoryActive]++;
+          formActive.appendChild(removeButton);
+          containers.append(formActive);
+          startIndexForm++;
         });
 
         sectionFieldsAdd[categoryActive].forEach(function (rows) {
-          var div2 = this1.createElement(
+          var activeCategory = this1.createElement(
             "div",
-            categoryActive + "newView" + startIndexView[categoryActive],
-            categoryActive + "innerview" + startIndexView[categoryActive]
+            categoryActive + "newView" + startIndexView,
+            categoryActive + "innerview" + startIndexView
           );
           rows.forEach(function (column, index) {
             var p = this1.createElement(
               "p",
               fields[categoryActive][index],
-              fields[categoryActive][index] + startIndexView[categoryActive]
+              fields[categoryActive][index] + startIndexView
             );
             // p.appendChild(document.createTextNode(column));
-            div2.appendChild(p);
+            activeCategory.appendChild(p);
           });
-          containersview.append(div2);
-          startIndexView[categoryActive]++;
+          containersview.append(activeCategory);
+          startIndexView++;
         });
       }
     });
@@ -465,7 +444,7 @@ class Controller {
     this.view.bindResetButton(this.handleResetButton);
     this.view.bindRemoveButton(this.handleRemoveButton);
     this.view.bindConfirmButtonNewFields(this.handleConfirmButtonNewFields);
-    // this.bindAddButton(this.handleAddButton);
+
     this.handleAddButton(this.model.configData);
   }
 
@@ -486,7 +465,7 @@ class Controller {
   };
 
   handleAddButton = configData => {
-    this.view.AddButton(configData);
+    this.view.onAddButtonClick(configData);
   };
 
   onshowProjectSection = configData => {
