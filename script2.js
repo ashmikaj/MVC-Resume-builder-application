@@ -129,32 +129,6 @@ class Model {
   bindDisplayValues(callback) {
     this.displayValues = callback;
   }
-
-  confirmButton() {
-    var collection = document.getElementsByTagName("input");
-    Array.from(collection).forEach(function (element) {
-      const a = document.getElementById(element.id.replace("form", ""));
-      const b = document.getElementById(element.id).value;
-      a.innerHTML = b;
-    });
-  }
-
-  resetButton() {
-    var fields = document.getElementsByTagName("input");
-    Array.from(fields).forEach(function (element) {
-      const c = document.getElementById(element.id.replace("form", ""));
-      const d = document.getElementById(element.id);
-
-      d.value = c.textContent.replace(/\s+/g, " ");
-    });
-  }
-
-  removeButton(e) {
-    var ele2 = e.replace("inner", "innerview");
-    // console.log(e, ele2);
-    document.querySelectorAll("#" + e).forEach(el => el.remove());
-    document.querySelectorAll("#" + ele2).forEach(el => el.remove());
-  }
 }
 
 class View {
@@ -186,17 +160,43 @@ class View {
     return element;
   }
 
+  confirmButton() {
+    var collection = document.getElementsByTagName("input");
+    Array.from(collection).forEach(function (element) {
+      const a = document.getElementById(element.id.replace("form", ""));
+      const b = document.getElementById(element.id).value;
+      a.innerHTML = b;
+    });
+  }
+
   bindConfirmButton(handle) {
     this.inputContainer.addEventListener("click", event => {
-      if (event.target.className === "confirmForm") {
+      if (event.target.id === "confirmBtn") {
         handle();
       }
     });
   }
 
+  resetButton() {
+    var fields = document.getElementsByTagName("input");
+    Array.from(fields).forEach(function (element) {
+      const c = document.getElementById(element.id.replace("form", ""));
+      const d = document.getElementById(element.id);
+
+      d.value = c.textContent.replace(/\s+/g, " ");
+    });
+  }
+
+  removeButton(e) {
+    var ele2 = e.replace("inner", "innerview");
+    // console.log(e, ele2);
+    document.querySelectorAll("#" + e).forEach(el => el.remove());
+    document.querySelectorAll("#" + ele2).forEach(el => el.remove());
+  }
+
   bindResetButton(handle) {
     this.inputContainer.addEventListener("click", event => {
-      if (event.target.className === "resetFields") {
+      if (event.target.id === "resetBtn") {
         handle();
       }
     });
@@ -205,7 +205,7 @@ class View {
   bindRemoveButton(handle) {
     var select = this.getElement(".selectBox");
     this.inputContainer.addEventListener("click", event => {
-      if (event.target.className === "removeFields") {
+      if (event.target.id === "removeBtn") {
         switch (select.value) {
           case "Basic" || "Objective":
             alert("you cant remove these fields");
@@ -219,7 +219,7 @@ class View {
 
   bindConfirmButtonNewFields(handle) {
     this.inputContainer.addEventListener("click", event => {
-      if (event.target.className === "confirmFormNew") {
+      if (event.target.id === "confirmBtnNew") {
         const id = event.target.parentElement.id;
         handle(id);
       }
@@ -318,15 +318,27 @@ class View {
           sectionContainer.append(label, p);
         });
 
-        var confirmButton = this1.createElement("Button", "confirmForm");
+        var confirmButton = this1.createElement(
+          "Button",
+          "confirmForm",
+          "confirmBtn"
+        );
         confirmButton.append(document.createTextNode("confirm"));
 
         sectionContainer.appendChild(confirmButton);
-        var resetButton = this1.createElement("Button", "resetFields");
+        var resetButton = this1.createElement(
+          "Button",
+          "resetFields",
+          "resetBtn"
+        );
         resetButton.append(document.createTextNode("Reset"));
 
         sectionContainer.appendChild(resetButton);
-        var removeButton = this1.createElement("Button", "removeFields");
+        var removeButton = this1.createElement(
+          "Button",
+          "removeFields",
+          "removeBtn"
+        );
         removeButton.append(document.createTextNode(" X "));
 
         sectionContainer.appendChild(removeButton);
@@ -388,15 +400,27 @@ class View {
             formActive.append(label, p);
           });
 
-          var confirmButton = this1.createElement("Button", "confirmForm");
+          var confirmButton = this1.createElement(
+            "Button",
+            "confirmForm",
+            "confirmBtn"
+          );
           confirmButton.append(document.createTextNode("confirm"));
 
           formActive.appendChild(confirmButton);
-          var resetButton = this1.createElement("Button", "resetFields");
+          var resetButton = this1.createElement(
+            "Button",
+            "resetFields",
+            "resetBtn"
+          );
           resetButton.append(document.createTextNode("Reset"));
 
           formActive.appendChild(resetButton);
-          var removeButton = this1.createElement("Button", "removeFields");
+          var removeButton = this1.createElement(
+            "Button",
+            "removeFields",
+            "removeBtn"
+          );
           removeButton.append(document.createTextNode(" X "));
 
           formActive.appendChild(removeButton);
@@ -449,11 +473,11 @@ class Controller {
   }
 
   handleConfirmButton = () => {
-    this.model.confirmButton();
+    this.view.confirmButton();
   };
 
   handleResetButton = () => {
-    this.model.resetButton();
+    this.view.resetButton();
   };
 
   handleConfirmButtonNewFields = id => {
@@ -461,7 +485,7 @@ class Controller {
   };
 
   handleRemoveButton = id => {
-    this.model.removeButton(id);
+    this.view.removeButton(id);
   };
 
   handleAddButton = configData => {
