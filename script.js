@@ -269,6 +269,53 @@ class View {
     removeButton.append(document.createTextNode(" X "));
     return formActive.appendChild(removeButton);
   }
+  newTemplateHelper(
+    sectionFieldsAdd,
+    categoryActive,
+    fields,
+    startIndexView,
+    containersview,
+    createHelper
+  ) {
+    sectionFieldsAdd[categoryActive].map(function (rows) {
+      var activeCategory = createHelper(
+        "div",
+        categoryActive + "newView" + startIndexView,
+        categoryActive + "innerview" + startIndexView
+      );
+      Object.keys(rows).forEach(function (column, index) {
+        var p = createHelper(
+          "p",
+          fields[categoryActive][index],
+          fields[categoryActive][index] + startIndexView
+        );
+        activeCategory.appendChild(p);
+      });
+      return containersview.append(activeCategory), startIndexView++;
+    });
+  }
+  inputFieldsHelper(
+    rows,
+    createElementHelper,
+    fields,
+    categoryActive,
+    startIndexForm,
+    formActive
+  ) {
+    Object.keys(rows).forEach(function (column, index) {
+      var label = createElementHelper("label");
+      label.appendChild(document.createTextNode(fields[categoryActive][index]));
+      var p = createElementHelper(
+        "input",
+        fields[categoryActive][index] + "form",
+        fields[categoryActive][index] + "form" + startIndexForm
+      );
+
+      p.appendChild(document.createTextNode(column));
+
+      return formActive.append(label, p);
+    });
+  }
 
   showProjectSection(configData) {
     ///this is for the select box
@@ -339,6 +386,7 @@ class View {
           sectionName + "new" + startIndexForm,
           sectionName + "inner" + startIndexForm
         );
+
         rows.forEach(function (column, index) {
           var label = this1.createElement("label");
           label.appendChild(
@@ -399,21 +447,15 @@ class View {
             categoryActive + "new" + startIndexForm,
             categoryActive + "inner" + startIndexForm
           );
-          Object.keys(rows).forEach(function (column, index) {
-            var label = this1.createElement("label");
-            label.appendChild(
-              document.createTextNode(fields[categoryActive][index])
-            );
-            var p = this1.createElement(
-              "input",
-              fields[categoryActive][index] + "form",
-              fields[categoryActive][index] + "form" + startIndexForm
-            );
 
-            p.appendChild(document.createTextNode(column));
-
-            formActive.append(label, p);
-          });
+          this1.inputFieldsHelper(
+            rows,
+            this1.createElement,
+            fields,
+            categoryActive,
+            startIndexForm,
+            formActive
+          );
 
           this1.confirmButtonElement(formActive, this1.createElement);
           this1.resetButtonElement(formActive, this1.createElement);
@@ -423,24 +465,14 @@ class View {
           startIndexForm++;
         });
 
-        sectionFieldsAdd[categoryActive].map(function (rows) {
-          var activeCategory = this1.createElement(
-            "div",
-            categoryActive + "newView" + startIndexView,
-            categoryActive + "innerview" + startIndexView
-          );
-          Object.keys(rows).forEach(function (column, index) {
-            var p = this1.createElement(
-              "p",
-              fields[categoryActive][index],
-              fields[categoryActive][index] + startIndexView
-            );
-            // p.appendChild(document.createTextNode(column));
-            activeCategory.appendChild(p);
-          });
-          containersview.append(activeCategory);
-          startIndexView++;
-        });
+        this1.newTemplateHelper(
+          sectionFieldsAdd,
+          categoryActive,
+          fields,
+          startIndexView,
+          containersview,
+          this1.createElement
+        );
       }
     });
   }
