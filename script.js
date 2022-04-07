@@ -101,23 +101,31 @@ class Model {
       },
       sectionFieldsAdd: {
         Education: [
-          [
-            "Enter Degree...",
-            "Enter institute...",
-            "Enter term(yyyy-yyyy) format",
-            "Enter Grade.....",
-          ],
+          {
+            degree: "Enter Degree...",
+            institute: "Enter institute...",
+            termEd: "Enter term...",
+            grade: "Enter Grade....",
+          },
         ],
         Experience: [
-          [
-            "Enter Designation....",
-            "Enter Company Name....",
-            "Enter the period",
-            "Enter your Work experience",
-          ],
+          {
+            designation: "Enter Designation",
+            company: "Enter Company Name....",
+            termEx: "Enter Period of service",
+            workEx: "Enter your Work experience",
+          },
         ],
-        Skills: [["Enter a new Skill...."]],
-        Awards: [["Enter a new achievement...."]],
+        Skills: [
+          {
+            skills: "Enter New Skill",
+          },
+        ],
+        Awards: [
+          {
+            awards: "Enter New Award",
+          },
+        ],
       },
     };
   }
@@ -226,6 +234,42 @@ class View {
     });
   }
 
+  refreshContainerHelper(container) {
+    while (container.children.length > 0) {
+      container.removeChild(container.lastChild);
+    }
+  }
+
+  optionHelper(sectionNames, select, container) {
+    sectionNames.forEach(function (sectionname) {
+      var option = document.createElement("option");
+      option.append(document.createTextNode(sectionname));
+      select.appendChild(option);
+      option.value = sectionname;
+    });
+    return container.appendChild(select);
+  }
+  confirmButtonElement(formActive, createHelper) {
+    var confirmButton = createHelper("Button", "confirmForm", "confirmBtn");
+    confirmButton.append(document.createTextNode("confirm"));
+    return formActive.appendChild(confirmButton);
+  }
+  resetButtonElement(formActive, createButtonHelper) {
+    var resetButton = createButtonHelper("Button", "resetFields", "resetBtn");
+    resetButton.append(document.createTextNode("Reset"));
+    return formActive.appendChild(resetButton);
+  }
+
+  removeButtonElement(formActive, createButtonHelper) {
+    var removeButton = createButtonHelper(
+      "Button",
+      "removeFields",
+      "removeBtn"
+    );
+    removeButton.append(document.createTextNode(" X "));
+    return formActive.appendChild(removeButton);
+  }
+
   showProjectSection(configData) {
     ///this is for the select box
 
@@ -239,9 +283,7 @@ class View {
     var imgData = configData.Images;
     var x = "Basic";
 
-    while (this1.nameContainer.children.length > 0) {
-      this1.nameContainer.removeChild(this1.nameContainer.lastChild);
-    }
+    this1.refreshContainerHelper(this1.nameContainer);
 
     sectionNames.forEach(function (sectionName) {
       var div = this1.createElement("div", sectionName + "View");
@@ -275,22 +317,16 @@ class View {
 
     this1.showDefaultValues();
 
-    while (this1.inputContainer.children.length > 0) {
-      this1.inputContainer.removeChild(this1.inputContainer.lastChild);
-    }
+    this1.refreshContainerHelper(this1.inputContainer);
+
     select.onchange = function () {
       var newCategory = select.value;
       document.getElementById(newCategory).style.display = "block";
       document.getElementById(x).style.display = "none";
       x = newCategory;
     };
-    sectionNames.forEach(function (sectionname) {
-      var option = document.createElement("option");
-      option.append(document.createTextNode(sectionname));
-      select.appendChild(option);
-      option.value = sectionname;
-    });
-    this1.inputContainer.appendChild(select);
+
+    this1.optionHelper(sectionNames, select, this1.inputContainer);
 
     ///this is for the forms & input fields
 
@@ -318,30 +354,9 @@ class View {
           sectionContainer.append(label, p);
         });
 
-        var confirmButton = this1.createElement(
-          "Button",
-          "confirmForm",
-          "confirmBtn"
-        );
-        confirmButton.append(document.createTextNode("confirm"));
-
-        sectionContainer.appendChild(confirmButton);
-        var resetButton = this1.createElement(
-          "Button",
-          "resetFields",
-          "resetBtn"
-        );
-        resetButton.append(document.createTextNode("Reset"));
-
-        sectionContainer.appendChild(resetButton);
-        var removeButton = this1.createElement(
-          "Button",
-          "removeFields",
-          "removeBtn"
-        );
-        removeButton.append(document.createTextNode(" X "));
-
-        sectionContainer.appendChild(removeButton);
+        this1.confirmButtonElement(sectionContainer, this1.createElement);
+        this1.resetButtonElement(sectionContainer, this1.createElement);
+        this1.removeButtonElement(sectionContainer, this1.createElement);
         div.appendChild(sectionContainer);
         this1.inputContainer.append(div);
         startIndexForm++;
@@ -378,13 +393,13 @@ class View {
           alert("you can't add in this section");
         }
 
-        sectionFieldsAdd[categoryActive].forEach(function (rows) {
+        sectionFieldsAdd[categoryActive].map(function (rows) {
           var formActive = this1.createElement(
             "div",
             categoryActive + "new" + startIndexForm,
             categoryActive + "inner" + startIndexForm
           );
-          rows.forEach(function (column, index) {
+          Object.keys(rows).forEach(function (column, index) {
             var label = this1.createElement("label");
             label.appendChild(
               document.createTextNode(fields[categoryActive][index])
@@ -396,46 +411,25 @@ class View {
             );
 
             p.appendChild(document.createTextNode(column));
-            // p.value = [column];
+
             formActive.append(label, p);
           });
 
-          var confirmButton = this1.createElement(
-            "Button",
-            "confirmForm",
-            "confirmBtn"
-          );
-          confirmButton.append(document.createTextNode("confirm"));
+          this1.confirmButtonElement(formActive, this1.createElement);
+          this1.resetButtonElement(formActive, this1.createElement);
+          this1.removeButtonElement(formActive, this1.createElement);
 
-          formActive.appendChild(confirmButton);
-
-          var resetButton = this1.createElement(
-            "Button",
-            "resetFields",
-            "resetBtn"
-          );
-          resetButton.append(document.createTextNode("Reset"));
-
-          formActive.appendChild(resetButton);
-          var removeButton = this1.createElement(
-            "Button",
-            "removeFields",
-            "removeBtn"
-          );
-          removeButton.append(document.createTextNode(" X "));
-
-          formActive.appendChild(removeButton);
           containers.append(formActive);
           startIndexForm++;
         });
 
-        sectionFieldsAdd[categoryActive].forEach(function (rows) {
+        sectionFieldsAdd[categoryActive].map(function (rows) {
           var activeCategory = this1.createElement(
             "div",
             categoryActive + "newView" + startIndexView,
             categoryActive + "innerview" + startIndexView
           );
-          rows.forEach(function (column, index) {
+          Object.keys(rows).forEach(function (column, index) {
             var p = this1.createElement(
               "p",
               fields[categoryActive][index],
